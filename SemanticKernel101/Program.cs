@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.SemanticKernel.Connectors;
 using Microsoft.SemanticKernel;
 using SemanticKernel101.Assistants;
 using SemanticKernel101.Plugins;
@@ -19,13 +20,27 @@ var services = new ServiceCollection();
 services.AddSingleton<IConfiguration>(config);
 
 // Register Kernel as a singleton
-services.AddSingleton<Kernel>(serviceProvider =>
+services.AddSingleton<Kernel>(_ =>
 {
     var builder = Kernel.CreateBuilder();
     builder.AddAzureOpenAIChatCompletion(model, endpoint, apiKey);
     builder.Plugins.AddFromType<TimePlugin>();
+    builder.Plugins.AddFromType<MathPlugin>();
     return builder.Build();
 });
+
+#pragma warning disable SKEXP0070
+// Register a keyed singleton for a Semantic Kernel Kernel
+services.AddKeyedSingleton("local", (_, _) =>
+{
+    var builder = Kernel.CreateBuilder();
+    builder.AddAzureAIInferenceChatCompletion(
+        modelId: "Phi-3.5-mini-instruct-generic-gpu",
+        endpoint: new Uri("http://localhost:5273/v1") 
+    );
+    return builder.Build();
+});
+#pragma warning restore SKEXP0070
 
 // Register your assistant classes
 services.AddTransient<SimpleChat>();
