@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 using SemanticKernel101.Assistants;
+using SemanticKernel101.Plugins;
 
 var config = new ConfigurationBuilder()
     .AddUserSecrets<Program>()
@@ -22,6 +23,7 @@ services.AddSingleton<Kernel>(serviceProvider =>
 {
     var builder = Kernel.CreateBuilder();
     builder.AddAzureOpenAIChatCompletion(model, endpoint, apiKey);
+    builder.Plugins.AddFromType<TimePlugin>();
     return builder.Build();
 });
 

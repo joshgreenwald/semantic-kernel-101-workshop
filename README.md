@@ -5,6 +5,9 @@
 * .NET 9 SDK
 * Visual Studio Code, Visual Studio, or Rider (VS Code preferred)
 * Access to an Azure OpenAI Service with a deployed model
+* GitHub Copilot enabled in your IDE
+
+Before starting, make sure you have the latest versions of your IDE and extensions installed. The GitHub Copilot extension in VS Code updates quite often.
 
 ## Overview
 
@@ -248,3 +251,69 @@ finally
 }
 ```
 8. Run the application to see if things are still working as before.
+
+## Exercise 3: Using Semantic Kernel Plugins and Functions
+
+One of the most powerful features of Semantic Kernel is its ability to run C# code from the LLM. This allows you to 
+implement custom functions that can be called from the LLM, enabling you to create more complex applications. For example,
+you could create a function that retrieves data from a database or calls an external API. This is achieved via a mechanism
+called **function calling** in which the LLM is able to determine when to utilize a function and what parameters to pass to it.
+
+It may shock you to learn that LLMs do not know the current date or time. Why? Their knowledge source is static and does not change over time.
+You can try this out by running the chat we've already built and asking it "What is the current date and time?". Let's fix that.
+
+1. Create a new directory called `Plugins` and an empty `TimePlugin.cs` file inside it.
+
+```csharp
+using System.ComponentModel;
+using Microsoft.SemanticKernel;
+
+namespace SemanticKernel101.Plugins;
+
+public class TimePlugin
+{
+    [KernelFunction]
+    [Description("Get the current date and time")]
+    public DateTime GetCurrentDateTime()
+    {
+        return DateTime.Now;
+    }
+}
+```
+
+Notice how we decorated the method with `[KernelFunction]` and provided a description. This is how Semantic Kernel knows that this is a function that can be called from the LLM.
+
+2. Now we need to register this plugin with our kernel. Open `Program.cs` and change the kernel registration code to include the plugin:
+
+```csharp
+services.AddSingleton<Kernel>(serviceProvider =>
+{
+    var builder = Kernel.CreateBuilder();
+    builder.AddAzureOpenAIChatCompletion(model, endpoint, apiKey);
+    builder.Plugins.AddFromType<TimePlugin>();
+    return builder.Build();
+});
+```
+
+3. Finally, we need to expose the plugin to the LLM. This is done with automatic function calling. 
+
+In the `SimpleChat` class pass a `PromptExecutionSettings` object to the call to the chat completion service:
+
+```csharp
+var executionSettings = new PromptExecutionSettings()
+{
+    FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
+};
+
+var response = chatCompletionService.GetStreamingChatMessageContentsAsync(
+    chatHistory: history,
+    executionSettings: executionSettings,
+    kernel: _kernel
+);
+```
+
+4. Run the app and ask it "What is the current date and time?". It should now be able to call the `GetCurrentDateTime` function 
+and return the current date and time. You can also debug and set breakpoints to prove it's doing so.
+
+While this is a simple example, you can create more complex plugins that can interact with external systems, databases, or APIs.
+

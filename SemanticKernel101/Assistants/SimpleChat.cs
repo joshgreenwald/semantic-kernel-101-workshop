@@ -34,9 +34,15 @@ public class SimpleChat(Kernel _kernel)
             }
 
             history.AddUserMessage(userInput);
+            
+            var executionSettings = new PromptExecutionSettings()
+            {
+                FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
+            };
 
             var response = chatCompletionService.GetStreamingChatMessageContentsAsync(
                 chatHistory: history,
+                executionSettings: executionSettings,
                 kernel: _kernel
             );
 
