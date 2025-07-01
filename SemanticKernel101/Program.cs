@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
+using SemanticKernel101.Assistants;
 
 var config = new ConfigurationBuilder()
     .AddUserSecrets<Program>()
@@ -10,44 +11,34 @@ var endpoint = config["AzureOpenAI:Endpoint"] ?? "No secret found";
 var model = config["AzureOpenAI:Model"] ?? "gpt-4.1";
 var apiKey = config["AzureOpenAI:Key"] ?? "No key found";
 
-var builder = Kernel.CreateBuilder();
-builder.AddAzureOpenAIChatCompletion(model, endpoint, apiKey);
-var kernel = builder.Build();
+// Set up dependency injection container
+var services = new ServiceCollection();
 
-var chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
-var history = new ChatHistory();
-history.AddSystemMessage("You are a helpful assistant.");
+// Register configuration
+services.AddSingleton<IConfiguration>(config);
 
-Console.WriteLine("Welcome to the Semantic Kernel Chatbot!");
-Console.WriteLine("To exit the chat, type 'exit'.");
-Console.WriteLine();
-
-var continueChat = true;
-
-while (continueChat)
+// Register Kernel as a singleton
+services.AddSingleton<Kernel>(serviceProvider =>
 {
-    Console.Write("You: ");
-    var userInput = Console.ReadLine();
-    if (userInput == "exit")
-    {
-        continueChat = false;
-        break;
-    }
+    var builder = Kernel.CreateBuilder();
+    builder.AddAzureOpenAIChatCompletion(model, endpoint, apiKey);
+    return builder.Build();
+});
 
-    history.AddUserMessage(userInput);
-    
-    var response = chatCompletionService.GetStreamingChatMessageContentsAsync(
-        chatHistory: history,
-        kernel: kernel
-    );
-    
-    Console.Write("Assistant: ");
+// Register your assistant classes
+services.AddTransient<SimpleChat>();
 
-    await foreach (var chunk in response)
-    {
-        Console.Write(chunk);
-    }
-    
-    Console.WriteLine();
-    Console.WriteLine();
+// Build the service provider
+var serviceProvider = services.BuildServiceProvider();
+
+try
+{
+    // Resolve and run your application
+    var chat = serviceProvider.GetRequiredService<SimpleChat>();
+    await chat.RunAssistant();
+}
+finally
+{
+    // Dispose of the service provider to clean up resources
+    await serviceProvider.DisposeAsync();
 }
