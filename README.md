@@ -11,13 +11,13 @@ Before starting, make sure you have the latest versions of your IDE and extensio
 
 ## Overview
 
-This workshop will introduce you to creating applications with Semantic Kernel and implementing updates to it with GitHub Copilot.
+This workshop will introduce you to creating applications with Semantic Kernel and implementing updates to your code with GitHub Copilot.
 
 We will start with an empty C# console application. Open the **SemanticKernel101** C# project in your IDE of choice. If you are using Visual Studio Code, open the folder containing the project.
 
 ## Exercise 1: Create your first Kernel
 
-First, we're going to create the most simple version of kernel.
+First, we're going to create the most simple version of a kernel.
 
 1. Create a User Secrets file to store the Azure OpenAI key and endpoint.
     - Run the command `dotnet user-secrets init` in the terminal in the project folder.
@@ -42,7 +42,7 @@ First, we're going to create the most simple version of kernel.
     - `Microsoft.SemanticKernel.Connectors.AzureOpenAI`
     - `Microsoft.Extensions.Configuration.UserSecrets`
 
-   You can do this in a package manager console or by running the following command in the terminal:
+   You can do this in the NuGet package manager or by running the following command in the terminal:
    ```bash
    dotnet add package Microsoft.SemanticKernel
    dotnet add package Microsoft.SemanticKernel.Connectors.AzureOpenAI
@@ -572,3 +572,19 @@ In my testing with GPT 4.1, it suggested a good plan.
 `
 I want to use the same work we did in the console app to make a Blazor application in the solution that gives the chat an interface.
 `
+
+## Conclusion
+
+This was a lot, right? 
+
+We covered a lot of ground in this workshop, from creating a simple kernel to using GitHub Copilot to implement dependency injection, plugins, and custom chat modes. We also explored how to use Semantic Kernel's function calling capabilities and how to run local models with Azure Foundry Local.
+
+However, we barely scratched the surface of what Semantic Kernel and GitHub Copilot can do. This should give you a 
+solid foundation and a running start to explore more advanced features and capabilities.
+
+## Resources
+- [Semantic Kernel Documentation](https://learn.microsoft.com/en-us/semantic-kernel/)
+- [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
+- [Customizing GitHub Copilot Chat](https://code.visualstudio.com/docs/copilot/copilot-customization)
+- [Awesome Copilot](https://github.com/github/awesome-copilot)
+- [Azure Foundry Local Documentation](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-local/get-started)
