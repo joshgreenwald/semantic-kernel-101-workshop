@@ -121,14 +121,16 @@ So far, so good. But, what if we want to reuse our kernel in throughout the appl
 2. The code of this class should look like this:
 
 ```csharp
-    public SimpleChat(Kernel kernel)
-    {
-        this.kernel = kernel;
-    }
+using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.ChatCompletion;
 
+namespace SemanticKernel101.Assistants;
+
+public class SimpleChat(Kernel _kernel)
+{
     public async Task RunAssistant()
     {
-        var chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
+        var chatCompletionService = _kernel.GetRequiredService<IChatCompletionService>();
         var history = new ChatHistory();
         history.AddSystemMessage("You are a helpful assistant.");
 
@@ -148,20 +150,32 @@ So far, so good. But, what if we want to reuse our kernel in throughout the appl
                 break;
             }
 
+            if (string.IsNullOrWhiteSpace(userInput))
+            {
+                Console.WriteLine("Please enter a valid message.");
+                continue;
+            }
+
             history.AddUserMessage(userInput);
-    
+            
+            var executionSettings = new PromptExecutionSettings()
+            {
+                FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
+            };
+
             var response = chatCompletionService.GetStreamingChatMessageContentsAsync(
                 chatHistory: history,
-                kernel: kernel
+                executionSettings: executionSettings,
+                kernel: _kernel
             );
-    
+
             Console.Write("Assistant: ");
 
             await foreach (var chunk in response)
             {
                 Console.Write(chunk);
             }
-    
+
             Console.WriteLine();
             Console.WriteLine();
         }
