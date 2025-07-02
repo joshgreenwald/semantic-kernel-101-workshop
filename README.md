@@ -531,4 +531,44 @@ The markdown file should be named `documentation.md` and placed in the root of t
 
 Has creating documentation ever been this easy?
 
+## Exercise 7: Make a Plan with Custom Chat Modes
 
+As you know, there are built-in chat modes in GitHub Copilot: **Ask**, **Edit**, and **Agent**. However, you can 
+also create your own custom chat modes that can be used across your codebase. For example, you might want a chat
+mode for planning that has the power of **Agent** mode but is focused on generating implementation plans rather than 
+editing code. Let's create a custom chat mode for planning adding a kernel that supports Gemini Pro 2.5.
+
+1. On the Chat window, click on the `...` button and `Configure Modes`.
+2. On the command palette, select `Create new custom chat mode file` and name your mode Plan.
+3. Add the following content to the `Plan.chatmode.md` file:
+
+```markdown
+---
+description: 'Make a plan for developing a new feature or fixing a bug in the codebase.'
+tools: ['codebase', 'fetch', 'findTestFiles', 'githubRepo', 'search', 'usages']
+---
+# Planning mode instructions
+You are in planning mode. Your task is to generate an implementation plan for a new feature or for refactoring existing code.
+Don't make any code edits, just generate a plan.
+
+The plan consists of a Markdown document that describes the implementation plan, including the following sections:
+
+* Overview: A brief description of the feature or refactoring task.
+* Requirements: A list of requirements for the feature or refactoring task.
+* Implementation Steps: A detailed list of steps to implement the feature or refactoring task. Include code examples.
+* Testing: A list of tests that need to be implemented to verify the feature or refactoring task.
+```
+
+4. In the Chat window, select the `Plan` chat mode from the dropdown and provide this prompt:
+
+`
+I want to create a new kernel for Gemini Pro 2.5
+`
+
+In my testing with GPT 4.1, it suggested a good plan.
+
+7. You can also try making a plan for a complex feature with Claude Sonnet 3.7 or 4. 
+
+`
+I want to use the same work we did in the console app to make a Blazor application in the solution that gives the chat an interface.
+`
