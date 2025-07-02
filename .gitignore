@@ -54,3 +54,4 @@ TestResult.xml
 nunit-*.xml
 /.idea/
 /SemanticKernel101/Folder.DotSettings.user
+/SemanticKernel101/.idea/
