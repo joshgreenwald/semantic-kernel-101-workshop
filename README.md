@@ -11,44 +11,44 @@ Before starting, make sure you have the latest versions of your IDE and extensio
 
 ## Overview
 
-This workshop will introduce you to creating applications with Semantic Kernel and implementing updates to it with GitHub Copilot.
+This workshop will introduce you to creating applications with Semantic Kernel and implementing updates to your code with GitHub Copilot.
 
 We will start with an empty C# console application. Open the **SemanticKernel101** C# project in your IDE of choice. If you are using Visual Studio Code, open the folder containing the project.
 
 ## Exercise 1: Create your first Kernel
 
-First, we're going to create the most simple version of kernel.
+First, we're going to create the most simple version of a kernel.
 
 1. Create a User Secrets file to store the Azure OpenAI key and endpoint.
-   - Run the command `dotnet user-secrets init` in the terminal in the project folder.
-   - Add your Azure OpenAI key and endpoint to the secrets file, providing the endpoint and key to your Azure OpenAI instance:
-     ```json
-     {
-       "AzureOpenAI:Model": "gpt-4.1",
-       "AzureOpenAI:Key": "78b2dd0b5a9b4526ae83be81601422ab",
-       "AzureOpenAI:Endpoint": "https://openai-copilotbuilder.openai.azure.com/"
-     }
-     ```
-     Alternatively, you can use the dotnet CLI to add these secrets directly:
-     ```bash
-     dotnet user-secrets set "AzureOpenAI:Endpoint" "<your-endpoint>"
-     dotnet user-secrets set "AzureOpenAI:Key" "<your-key>"
-     dotnet user-secrets set "AzureOpenAI:Model" "gpt-4.1"
-        ```
+    - Run the command `dotnet user-secrets init` in the terminal in the project folder.
+    - Add your Azure OpenAI key and endpoint to the secrets file, providing the endpoint and key to your Azure OpenAI instance:
+      ```json
+      {
+        "AzureOpenAI:Model": "gpt-4.1",
+        "AzureOpenAI:Key": "78b2dd0b5a9b4526ae83be81601422ab",
+        "AzureOpenAI:Endpoint": "https://openai-copilotbuilder.openai.azure.com/"
+      }
+      ```
+      Alternatively, you can use the dotnet CLI to add these secrets directly:
+      ```bash
+      dotnet user-secrets set "AzureOpenAI:Endpoint" "<your-endpoint>"
+      dotnet user-secrets set "AzureOpenAI:Key" "<your-key>"
+      dotnet user-secrets set "AzureOpenAI:Model" "gpt-4.1"
+         ```
 
 
 2. Install the following NuGet packages:
-   - `Microsoft.SemanticKernel`
-   - `Microsoft.SemanticKernel.Connectors.AzureOpenAI`
-   - `Microsoft.Extensions.Configuration.UserSecrets`
+    - `Microsoft.SemanticKernel`
+    - `Microsoft.SemanticKernel.Connectors.AzureOpenAI`
+    - `Microsoft.Extensions.Configuration.UserSecrets`
 
-   You can do this in a package manager console or by running the following command in the terminal:
+   You can do this in the NuGet package manager or by running the following command in the terminal:
    ```bash
    dotnet add package Microsoft.SemanticKernel
    dotnet add package Microsoft.SemanticKernel.Connectors.AzureOpenAI
    dotnet add package Microsoft.Extensions.Configuration.UserSecrets
    ```
-   
+
 3. In Program.cs, add the following code to create a simple kernel that uses your Azure OpenAI instance:
 
 ```csharp
@@ -115,7 +115,7 @@ while (continueChat)
 
 ## Exercise 2: Using GitHub Copilot to Implement Dependency Injection
 
-So far, so good. But, what if we want to reuse our kernel in throughout the application? 
+So far, so good. But, what if we want to reuse our kernel in throughout the application?
 
 1. First, let's separate our existing assistant into a separate class. Create a new directory called `Assistants` and then an empty `SimpleChat.cs` file inside it.
 2. The code of this class should look like this:
@@ -195,8 +195,8 @@ await chat.RunAssistant();
 That makes things more concise, but as our application grows, we'll want to use dependency injection to manage our kernel and other services.
 We could write this code by ourselves, but let's use GitHub Copilot to help us implement dependency injection.
 
-4. While Program.cs is open, let's use **Ask** mode with GPT 4.1 to see how it would approach this. Ask it "How do I implement dependency injection for my Kernel?". 
-What does this look like? Was it a good answer? Now ask it with Claude. How does it compare? Was one model faster over the other?
+4. While Program.cs is open, let's use **Ask** mode with GPT 4.1 to see how it would approach this. Ask it "How do I implement dependency injection for my Kernel?".
+   What does this look like? Was it a good answer? Now ask it with Claude. How does it compare? Was one model faster over the other?
 5. **Ask** mode is great, but wouldn't it be nice if we could just have GitHub Copilot make changes for us across the entire codebase? Let's switch to **Agent** mode and try this prompt:
 
 `I would like to have dependency injection support. Implement this for my Kernel. Also make sure that the SimpleChat utilizes dependency injection and can be injected itself.`
@@ -254,7 +254,7 @@ finally
 
 ## Exercise 3: Using Semantic Kernel Plugins and Functions
 
-One of the most powerful features of Semantic Kernel is its ability to run C# code from the LLM. This allows you to 
+One of the most powerful features of Semantic Kernel is its ability to run C# code from the LLM. This allows you to
 implement custom functions that can be called from the LLM, enabling you to create more complex applications. For example,
 you could create a function that retrieves data from a database or calls an external API. This is achieved via a mechanism
 called **function calling** in which the LLM is able to determine when to utilize a function and what parameters to pass to it.
@@ -295,7 +295,7 @@ services.AddSingleton<Kernel>(serviceProvider =>
 });
 ```
 
-3. Finally, we need to expose the plugin to the LLM. This is done with automatic function calling. 
+3. Finally, we need to expose the plugin to the LLM. This is done with automatic function calling.
 
 In the `SimpleChat` class pass a `PromptExecutionSettings` object to the call to the chat completion service:
 
@@ -312,14 +312,14 @@ var response = chatCompletionService.GetStreamingChatMessageContentsAsync(
 );
 ```
 
-4. Run the app and ask it "What is the current date and time?". It should now be able to call the `GetCurrentDateTime` function 
-and return the current date and time. You can also debug and set breakpoints to prove it's doing so.
+4. Run the app and ask it "What is the current date and time?". It should now be able to call the `GetCurrentDateTime` function
+   and return the current date and time. You can also debug and set breakpoints to prove it's doing so.
 
 While this is a simple example, you can create more complex plugins that can interact with external systems, databases, or APIs.
 
 ## Exercise 4: Run a Local Model and Create Another Kernel
 
-Semantic Kernel also supports running local models. This is useful for scenarios where you want to run a model locally 
+Semantic Kernel also supports running local models. This is useful for scenarios where you want to run a model locally
 without relying on an external service. Any data sent to and from these models is not sent to the cloud, so you can use them for sensitive data.
 
 We will use Azure Foundry Local to download and run modals locally. This is a free service that does not require an Azure subscription.
@@ -396,7 +396,7 @@ Notice how fast this model is compared to cloud-hosted models.
 ## Exercise 5: GitHub Copilot Instructions
 
 Remember that, in general, models work better when they have more information. With GitHub Copilot Instructions files,
-you can provide context to the the agent to help it understand your codebase and standards better. 
+you can provide context to the the agent to help it understand your codebase and standards better.
 This will help it produce code for you that you will be more likely to accept.
 
 Note that we will be using Visual Studio Code for this exercise.
@@ -452,7 +452,7 @@ Note that we will be using Visual Studio Code for this exercise.
 - Microsoft.SemanticKernel and related NuGet packages
 ```
 
-Note how we're telling GitHub Copilot the purpose of the project, how it's structured, and how we like our code to 
+Note how we're telling GitHub Copilot the purpose of the project, how it's structured, and how we like our code to
 be written. It will include these instructions with every request.
 
 4. Let's test this out by creating a new plugin that does math (something else that LLMs are not great at).
@@ -489,10 +489,10 @@ public class MathPlugin
 }
 ```
 
-Given the information it had in the instructions file, it knew exactly how to create the plugin, where to put it, and 
+Given the information it had in the instructions file, it knew exactly how to create the plugin, where to put it, and
 what methods to include.
 
-It's outside the scope of this workshop, but you can add more instructions files that apply to specific directories 
+It's outside the scope of this workshop, but you can add more instructions files that apply to specific directories
 or file types. It's very powerful!
 
 ## Exercise 6: GitHub Copilot Prompts
@@ -500,11 +500,11 @@ or file types. It's very powerful!
 You might be familiar with slash commands in GitHub Copilot like /explain, /fix, and /refactor. These are great for quickly getting help with your code.
 
 However, you can also create your own custom prompts that can be used across your codebase. This is done with the `.
-copilot/prompts` directory. These prompts can use powerful toolsets that read your code. You can even use MCP 
+copilot/prompts` directory. These prompts can use powerful toolsets that read your code. You can even use MCP
 toolsets (that's a whole other workshop).
 
-1. Let's use the VS Code command palette to create a new prompt. Open the command palette (Ctrl+Shift+P) and type 
-   "Chat: New Prompt File". Accept the default directory and name the prompt file `createdoc`. This will create a 
+1. Let's use the VS Code command palette to create a new prompt. Open the command palette (Ctrl+Shift+P) and type
+   "Chat: New Prompt File". Accept the default directory and name the prompt file `createdoc`. This will create a
    new file in the `.copilot/prompts` directory called `createdoc.prompt.md`. This naming convention is very important.
 2. Add the following content to the `createdoc.prompt.md` file:
 
@@ -533,9 +533,9 @@ Has creating documentation ever been this easy?
 
 ## Exercise 7: Make a Plan with Custom Chat Modes
 
-As you know, there are built-in chat modes in GitHub Copilot: **Ask**, **Edit**, and **Agent**. However, you can 
+As you know, there are built-in chat modes in GitHub Copilot: **Ask**, **Edit**, and **Agent**. However, you can
 also create your own custom chat modes that can be used across your codebase. For example, you might want a chat
-mode for planning that has the power of **Agent** mode but is focused on generating implementation plans rather than 
+mode for planning that has the power of **Agent** mode but is focused on generating implementation plans rather than
 editing code. Let's create a custom chat mode for planning adding a kernel that supports Gemini Pro 2.5.
 
 1. On the Chat window, click on the `...` button and `Configure Modes`.
@@ -567,8 +567,24 @@ I want to create a new kernel for Gemini Pro 2.5
 
 In my testing with GPT 4.1, it suggested a good plan.
 
-7. You can also try making a plan for a complex feature with Claude Sonnet 3.7 or 4. 
+7. You can also try making a plan for a complex feature with Claude Sonnet 3.7 or 4.
 
 `
 I want to use the same work we did in the console app to make a Blazor application in the solution that gives the chat an interface.
 `
+
+## Conclusion
+
+This was a lot, right? 
+
+We covered a lot of ground in this workshop, from creating a simple kernel to using GitHub Copilot to implement dependency injection, plugins, and custom chat modes. We also explored how to use Semantic Kernel's function calling capabilities and how to run local models with Azure Foundry Local.
+
+However, we barely scratched the surface of what Semantic Kernel and GitHub Copilot can do. This should give you a 
+solid foundation and a running start to explore more advanced features and capabilities.
+
+## Resources
+- [Semantic Kernel Documentation](https://learn.microsoft.com/en-us/semantic-kernel/)
+- [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
+- [Customizing GitHub Copilot Chat](https://code.visualstudio.com/docs/copilot/copilot-customization)
+- [Awesome Copilot](https://github.com/github/awesome-copilot)
+- [Azure Foundry Local Documentation](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-local/get-started)
